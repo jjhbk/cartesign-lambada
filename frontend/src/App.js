@@ -10,12 +10,22 @@ const App = () => {
     padRef.current?.clear();
   };
 
-  const trim = () => {
+  const sendSignature = () => {
+    fetch("http://127.0.0.1:3033/submit/", {
+      method: "POST",
+      headers: { "Content-type": "application/octet-stream" },
+      body: {
+        data: dataURL,
+      },
+    });
+  };
+  const trim = async () => {
     var url = "";
     url = padRef.current?.getCanvas().toDataURL("image/png");
     setDataURL(url);
     console.log(url);
     //addInput(JSON.stringify({ method: "create_nft", payload: String(url) }));
+    await sendSignature();
   };
 
   return (
