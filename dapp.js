@@ -190,8 +190,12 @@ const writeFileIpfs = async (path, data) => {
     }
 
     const txresponse = await getTx();
+    if (txresponse.data === undefined) {
+      console.log("need input data");
+      process.exit(1);
+    }
     console.log("tx is: " + txresponse);
-    CreateContract(txresponse.data);
+    CreateContract("my data is data");
     await finishTx();
   } catch (e) {
     console.log(e);
