@@ -43,13 +43,14 @@ const CreateContract = async (imgurl) => {
   try {
     console.log("creating a contract");
     const doc = new PDFDocument();
-    writeFileIpfs(`${statePath}/signature.png`);
+    writeFileIpfs(`${statePath}/signature.png`, imgurl);
     let buffers = [];
     doc.on("data", buffers.push.bind(buffers));
-    doc.on("end", () => {
+    doc.on("end", async () => {
       let pdfData = Buffer.concat(buffers);
       console.log("final pdf data is:", pdfData);
-      writeFileIpfs(`${statePath}/contract.pdf`, pdfData.buffer);
+      writeFileIpfs(`${statePath}/contract.pdf`, pdfData);
+      await finishTx();
     });
 
     console.log("starting....");
@@ -227,7 +228,7 @@ const writeFileIpfs = async (path, data) => {
     console.log("tx is: " + txresponse.data);
     await CreateContract(txresponse.data);
     // await recognize(txresponse.data);
-    await finishTx();
+    // await finishTx();
   } catch (e) {
     console.log(e);
     process.exit(1);
