@@ -1,6 +1,9 @@
-# Lambada Primes
+# CarteSign-Lambada
 
-This is an example which showcases a stateless function that can be used to calculate prime numbers between a range of integers in a verifiable and deterministic fashion.
+---
+
+CarteSign is a Handwritten Biometrics tool which can bring back traditional security to the world of Digital signature based smart contracts.
+
 This project leverages [Cartesi-Lambada](https://github.com/zippiehq/cartesi-lambada) ([wiki](https://github.com/zippiehq/cartesi-lambada/wiki)) a modular implementation of the Cartesi tech stack where the execution layer is provided by a Cartesi machine and the DA layer is provided by [espresso](https://www.espressosys.com/)/[celestia](https://celestia.org/).
 
 ## Steps to build
@@ -17,7 +20,7 @@ Inside the code-server you can clone [lambada-primes](https://github.com/jjhbk/l
 ### In the code-server
 
 Open up a terminal inside the code-server
-`cd lambada/primes && cartesi-build`
+`cd cartesign-lambada && cartesi-build`
 
 After the build is successful you will find a State CID which is an IPFS directory where the entire Cartesi machine state is stored along with some crucial information on how data comes into the cartesi machine.
 
