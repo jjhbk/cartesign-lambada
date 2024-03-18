@@ -2,7 +2,31 @@ const rollupServer = process.env.ROLLUP_HTTP_SERVER_URL;
 console.log(`HTTP rollup_server url is ${rollupServer}`);
 import { create } from "ipfs-http-client";
 import { Base64Encode } from "base64-stream";
+import { createWorker } from "tesseract.js";
+import path from "path";
 
+/*const recognize = (imgdata) => {
+  let imageBuffer = Buffer.from(imgdata, "base64");
+
+  const worker = createWorker({
+    langPath: path.join(__dirname, "..", "lang-data"),
+    logger: (m) => console.log(m),
+  });
+
+  (async () => {
+    await worker.load();
+    await worker.loadLanguage("eng");
+    await worker.initialize("eng");
+    console.log("Recognizing...");
+    const {
+      data: { text },
+    } = await worker.recognize(imageBuffer);
+    console.log("Recognized text:", text);
+    await worker.terminate();
+    writeFileIpfs(`${statePath}/text.txt`, text);
+  })();
+};
+*/
 //import axios from "axios";
 import fs from "fs";
 import PDFDocument from "pdfkit";
@@ -19,12 +43,17 @@ const CreateContract = async (imgurl) => {
   try {
     console.log("creating a contract");
     const doc = new PDFDocument();
-    var finalString = ""; // contains the base64 string
-    // var stream = doc.pipe(new Base64Encode());
-    doc.pipe(fs.createWriteStream("Contract.pdf"));
+    writeFileIpfs(`${statePath}/signature.png`);
+    let buffers = [];
+    doc.on("data", buffers.push.bind(buffers));
+    doc.on("end", () => {
+      let pdfData = Buffer.concat(buffers);
+      console.log("final pdf data is:", pdfData);
+      writeFileIpfs(`${statePath}/contract.pdf`, pdfData.buffer);
+    });
+
     console.log("starting....");
 
-    // const date = new Date();
     doc.image("./CarteSign.png", 150, 0, { width: 300 });
     doc.moveDown(3);
 
@@ -74,19 +103,6 @@ const CreateContract = async (imgurl) => {
 
     doc.image(imgurl, { width: 300 });
     doc.end();
-
-    /*stream.on("data", function (chunk) {
-      finalString += chunk;
-    });
-
-    stream.on("end", function () {
-      // the stream is at its end, so push the resulting base64 string to the response
-      console.log(finalString);
-      fs.writeFileSync("./contract.pdf", finalString);
-      writeFileIpfs(`${statePath}/contract.pdf`, finalString);
-    });*/
-    const fileblob = fs.readFileSync("./Contract.pdf");
-    writeFileIpfs(`${statePath}/contract.pdf`, fileblob.buffer);
   } catch (e) {
     console.log(e);
     process.exit(1);
@@ -210,8 +226,8 @@ const writeFileIpfs = async (path, data) => {
     }
     console.log("tx is: " + txresponse.data);
     await CreateContract(txresponse.data);
+    // await recognize(txresponse.data);
     await finishTx();
-    ipfs.files.write();
   } catch (e) {
     console.log(e);
     process.exit(1);
