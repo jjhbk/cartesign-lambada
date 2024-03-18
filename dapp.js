@@ -221,8 +221,13 @@ const writeFileIpfs = async (path, data) => {
     }
 
     const txresponse = await getTx();
+
     if (txresponse.data === undefined) {
       console.log("need input data");
+      process.exit(1);
+    }
+    if (txresponse.version !== 3) {
+      console.log("input from previous version found");
       process.exit(1);
     }
     console.log("tx is: " + txresponse.data);
