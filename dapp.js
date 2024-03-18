@@ -43,13 +43,14 @@ const CreateContract = async (imgurl) => {
   try {
     console.log("creating a contract");
     const doc = new PDFDocument();
-    writeFileIpfs(`${statePath}/signature.png`, imgurl);
+    await writeFileIpfs(`${statePath}/signature.png`, imgurl);
     let buffers = [];
     doc.on("data", buffers.push.bind(buffers));
     doc.on("end", async () => {
       let pdfData = Buffer.concat(buffers);
-      console.log("final pdf data is:", pdfData);
-      writeFileIpfs(`${statePath}/contract.pdf`, pdfData);
+      const uarr = new Uint8Array(pdfData.buffer);
+      console.log("final pdf data is:", uarr);
+      await writeFileIpfs(`${statePath}/contract.pdf`, uarr);
       await finishTx();
     });
 
@@ -113,6 +114,7 @@ const CreateContract = async (imgurl) => {
 // Function to perform GET request
 const getTx = async () => {
   try {
+    console.log("fetching txn");
     const response = await fetch(`${rollupServer}/get_tx`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -129,6 +131,7 @@ const getTx = async () => {
 // Function to perform GET request
 const getData = async (namespace, hash) => {
   try {
+    console.log("fetching data");
     const response = await fetch(
       `${rollupServer}/get_data/${namespace}/${hash}`
     );
@@ -145,6 +148,7 @@ const getData = async (namespace, hash) => {
 
 const hint = async (str) => {
   try {
+    console.log("fetching hint");
     const response = await fetch(`${rollupServer}/hint`, {
       method: "POST",
       headers: {
@@ -186,6 +190,7 @@ const finishTx = async () => {
 
 const existFileIpfs = async (path) => {
   try {
+    console.log("cheching if data exists");
     await ipfs.files.stat(path);
     return true;
   } catch (error) {
@@ -195,6 +200,7 @@ const existFileIpfs = async (path) => {
 };
 const readFileIpfs = async (path) => {
   try {
+    console.log("reading ipfs files");
     const chunks = [];
     for await (const chunk of ipfs.files.read(path)) {
       chunks.push(chunk);
@@ -210,6 +216,7 @@ const readFileIpfs = async (path) => {
 const writeFileIpfs = async (path, data) => {
   const exist = await existFileIpfs(path);
   if (exist) await ipfs.files.rm(path); // Remove file if exists (if new data is less than old data, the old data will remain in the file)
+  console.log("writing file");
   await ipfs.files.write(path, data, { create: true });
 };
 
@@ -226,7 +233,7 @@ const writeFileIpfs = async (path, data) => {
       console.log("need input data");
       process.exit(1);
     }
-    if (txresponse.version !== 3) {
+    if (txresponse.version != 3) {
       console.log("input from previous version found");
       process.exit(1);
     }
