@@ -14,13 +14,14 @@ const statePath = "/state";
 const company = "cartesi";
 const employee = "jj";
 const country = "India";
-//doc.pipe(fs.createWriteStream("Contract.pdf"));
 
 const CreateContract = async (imgurl) => {
   try {
     const doc = new PDFDocument();
     var finalString = ""; // contains the base64 string
-    var stream = doc.pipe(new Base64Encode());
+    // var stream = doc.pipe(new Base64Encode());
+    doc.pipe(fs.createWriteStream("Contract.pdf"));
+
     // const date = new Date();
     doc.image("./CarteSign.png", 150, 0, { width: 300 });
     doc.moveDown(3);
@@ -70,7 +71,7 @@ const CreateContract = async (imgurl) => {
     doc.image(imgurl, { width: 300 });
     doc.end();
 
-    stream.on("data", function (chunk) {
+    /*stream.on("data", function (chunk) {
       finalString += chunk;
     });
 
@@ -79,7 +80,9 @@ const CreateContract = async (imgurl) => {
       console.log(finalString);
       fs.writeFileSync("./contract.pdf", finalString);
       writeFileIpfs(`${statePath}/contract.pdf`, finalString);
-    });
+    });*/
+    const fileblob = fs.readFileSync("./Contract.pdf");
+    writeFileIpfs(`${statePath}/contract.pdf`, fileblob.buffer);
   } catch (e) {
     console.log(e);
     process.exit(1);
