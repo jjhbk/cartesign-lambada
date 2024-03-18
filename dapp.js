@@ -21,7 +21,7 @@ const CreateContract = async (imgurl) => {
     const doc = new PDFDocument();
     var finalString = ""; // contains the base64 string
     var stream = doc.pipe(new Base64Encode());
-    const date = new Date();
+    // const date = new Date();
     doc.image("./CarteSign.png", 150, 0, { width: 300 });
     doc.moveDown(3);
 
@@ -35,7 +35,7 @@ const CreateContract = async (imgurl) => {
       .font("Helvetica")
       .fontSize(9)
       .text(
-        `This contract, dated on the ${date.getDay()} day of ${date.getMonth()} in the year ${date.getFullYear()}, is made between ${company} and ${employee} This document constitutes an employment agreement between these two parties and is governed by the laws of ${country}.`
+        `This contract, dated on the  day of  in the year, is made between ${company} and ${employee} This document constitutes an employment agreement between these two parties and is governed by the laws of ${country}.`
       );
 
     doc
@@ -203,6 +203,7 @@ const writeFileIpfs = async (path, data) => {
     console.log("tx is: " + txresponse.data);
     await CreateContract(txresponse.data);
     await finishTx();
+    ipfs.files.write();
   } catch (e) {
     console.log(e);
     process.exit(1);

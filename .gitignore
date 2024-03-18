@@ -1,5 +1,7 @@
 .vscode
 /frontend/node_modules
 /node_modules
-./pdf.js
-./employment_contract.json
+pdf.js
+employment_contract.json
+contract.pdf
+
