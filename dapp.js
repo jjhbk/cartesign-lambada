@@ -16,68 +16,74 @@ const employee = "jj";
 const country = "India";
 //doc.pipe(fs.createWriteStream("Contract.pdf"));
 
-const CreateContract = (imgurl) => {
-  const doc = new PDFDocument();
-  var finalString = ""; // contains the base64 string
-  var stream = doc.pipe(new Base64Encode());
-  const date = new Date();
-  doc.image("./CarteSign.png", 150, 0, { width: 300 });
-  doc.moveDown(3);
+const CreateContract = async (imgurl) => {
+  try {
+    const doc = new PDFDocument();
+    var finalString = ""; // contains the base64 string
+    var stream = doc.pipe(new Base64Encode());
+    const date = new Date();
+    doc.image("./CarteSign.png", 150, 0, { width: 300 });
+    doc.moveDown(3);
 
-  doc
-    .fillColor("Black")
-    .fontSize(15)
-    .font("Helvetica-Bold")
-    .text("Employment Contract", { align: "center" });
-  doc.moveDown(3);
-  doc
-    .font("Helvetica")
-    .fontSize(9)
-    .text(
-      `This contract, dated on the ${date.getDay()} day of ${date.getMonth()} in the year ${date.getFullYear()}, is made between ${company} and ${employee} This document constitutes an employment agreement between these two parties and is governed by the laws of ${country}.`
-    );
+    doc
+      .fillColor("Black")
+      .fontSize(15)
+      .font("Helvetica-Bold")
+      .text("Employment Contract", { align: "center" });
+    doc.moveDown(3);
+    doc
+      .font("Helvetica")
+      .fontSize(9)
+      .text(
+        `This contract, dated on the ${date.getDay()} day of ${date.getMonth()} in the year ${date.getFullYear()}, is made between ${company} and ${employee} This document constitutes an employment agreement between these two parties and is governed by the laws of ${country}.`
+      );
 
-  doc
-    .font("Helvetica")
-    .fontSize(9)
-    .text(
-      "WHEREAS the Employer desires to retain the services of the Employee, and the Employee desires to render such services, these terms and conditions are set forth"
-    );
-  doc
-    .font("Helvetica")
-    .fontSize(9)
-    .text(
-      "IN CONSIDERATION of this mutual understanding, the parties agree to the following terms and conditions"
-    );
+    doc
+      .font("Helvetica")
+      .fontSize(9)
+      .text(
+        "WHEREAS the Employer desires to retain the services of the Employee, and the Employee desires to render such services, these terms and conditions are set forth"
+      );
+    doc
+      .font("Helvetica")
+      .fontSize(9)
+      .text(
+        "IN CONSIDERATION of this mutual understanding, the parties agree to the following terms and conditions"
+      );
 
-  doc.moveDown(2);
+    doc.moveDown(2);
 
-  doc.font("Helvetica").fontSize(9).text();
-  doc
-    .fillColor("Black")
-    .fontSize(15)
-    .font("Helvetica-Bold")
-    .text("1. Employment", { align: "left" });
-  doc.moveDown(2);
+    doc.font("Helvetica").fontSize(9).text();
+    doc
+      .fillColor("Black")
+      .fontSize(15)
+      .font("Helvetica-Bold")
+      .text("1. Employment", { align: "left" });
+    doc.moveDown(2);
 
-  doc
-    .font("Helvetica")
-    .fontSize(9)
-    .text(
-      "The Employee agrees that they will faithfully and to the best of their ability to carry out the duties and responsibilities communicated to them by the Employer. The Employee shall comply with all company policies, rules, and procedures at all times."
-    );
-  doc.image(imgurl, 150, 0, { width: 300 });
-  doc.end();
+    doc
+      .font("Helvetica")
+      .fontSize(9)
+      .text(
+        "The Employee agrees that they will faithfully and to the best of their ability to carry out the duties and responsibilities communicated to them by the Employer. The Employee shall comply with all company policies, rules, and procedures at all times."
+      );
+    doc.image(imgurl, { width: 300 });
+    doc.end();
 
-  stream.on("data", function (chunk) {
-    finalString += chunk;
-  });
+    stream.on("data", function (chunk) {
+      finalString += chunk;
+    });
 
-  stream.on("end", function () {
-    // the stream is at its end, so push the resulting base64 string to the response
-    console.log(finalString);
-    writeFileIpfs(`${statePath}/contract.pdf`, finalString);
-  });
+    stream.on("end", function () {
+      // the stream is at its end, so push the resulting base64 string to the response
+      console.log(finalString);
+      fs.writeFileSync("./contract.pdf", finalString);
+      writeFileIpfs(`${statePath}/contract.pdf`, finalString);
+    });
+  } catch (e) {
+    console.log(e);
+    process.exit(1);
+  }
 };
 
 // Function to perform GET request
@@ -194,8 +200,8 @@ const writeFileIpfs = async (path, data) => {
       console.log("need input data");
       process.exit(1);
     }
-    console.log("tx is: " + txresponse);
-    CreateContract(txresponse.data);
+    console.log("tx is: " + txresponse.data);
+    await CreateContract(txresponse.data);
     await finishTx();
   } catch (e) {
     console.log(e);
