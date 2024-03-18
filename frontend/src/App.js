@@ -5,19 +5,22 @@ import SignaturePad from "react-signature-canvas";
 const App = () => {
   let padRef = useRef({});
   const [dataURL, setDataURL] = useState("");
-  const cid = "bafybeia4pjlgfu4yga462k2u6wariuef4q42kdzwlecv6qntv2qyce4ary";
+  const cid = "bafybeifohesl7nvv3qjighgr47dutjkhtd4scobgnanddjndo6eadawztm";
   const clear = () => {
     padRef.current?.clear();
   };
 
   const sendSignature = () => {
-    fetch(`http://127.0.0.1:3033/submit/${cid}`, {
+    fetch(`/submit/${cid}`, {
       method: "POST",
       headers: { "Content-type": "application/octet-stream" },
       body: {
-        data: dataURL,
+        data: JSON.stringify({ data: dataURL, version: 3 }),
       },
-    });
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
   };
   const trim = async () => {
     var url = "";

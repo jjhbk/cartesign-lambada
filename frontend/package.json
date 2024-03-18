@@ -13,6 +13,7 @@
     "react-signature-canvas": "^1.0.6",
     "web-vitals": "^2.1.4"
   },
+  "proxy": "http://127.0.0.1:3033",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
