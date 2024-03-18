@@ -69,6 +69,5 @@ stream.on("end", function () {
   // the stream is at its end, so push the resulting base64 string to the response
   console.log(finalString);
   finalString = finalString;
+  fs.writeFileSync("./contract.pdf", finalString);
 });
-
-fs.writeFileSync("./contract.txt", finalString);

@@ -195,7 +195,7 @@ const writeFileIpfs = async (path, data) => {
       process.exit(1);
     }
     console.log("tx is: " + txresponse);
-    CreateContract("my data is data");
+    CreateContract(txresponse.data);
     await finishTx();
   } catch (e) {
     console.log(e);
