@@ -17,10 +17,12 @@ const country = "India";
 
 const CreateContract = async (imgurl) => {
   try {
+    console.log("creating a contract");
     const doc = new PDFDocument();
     var finalString = ""; // contains the base64 string
     // var stream = doc.pipe(new Base64Encode());
     doc.pipe(fs.createWriteStream("Contract.pdf"));
+    console.log("starting....");
 
     // const date = new Date();
     doc.image("./CarteSign.png", 150, 0, { width: 300 });
@@ -68,6 +70,8 @@ const CreateContract = async (imgurl) => {
       .text(
         "The Employee agrees that they will faithfully and to the best of their ability to carry out the duties and responsibilities communicated to them by the Employer. The Employee shall comply with all company policies, rules, and procedures at all times."
       );
+    console.log("adding signature");
+
     doc.image(imgurl, { width: 300 });
     doc.end();
 
@@ -146,6 +150,7 @@ const hint = async (str) => {
 // Function to perform POST request
 const finishTx = async () => {
   try {
+    console.log("finishing tx");
     const response = await fetch(`${rollupServer}/finish`, {
       method: "POST",
       headers: {
