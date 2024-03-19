@@ -218,7 +218,7 @@ const writeFileIpfs = async (path, data) => {
       console.log("need input data");
       process.exit(1);
     }
-    if (txresponse.version != 5) {
+    if (txresponse.version != 8) {
       console.log("input from previous version found");
       process.exit(1);
     }
