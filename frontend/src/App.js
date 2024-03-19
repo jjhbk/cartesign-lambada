@@ -11,11 +11,12 @@ const App = () => {
   };
 
   const sendSignature = () => {
+    const encoder = new TextEncoder();
     fetch(`/submit/${cid}`, {
       method: "POST",
       headers: { "Content-type": "application/octet-stream" },
       body: {
-        data: JSON.stringify({ data: dataURL, version: 3 }),
+        data: encoder.encode(JSON.stringify({ data: dataURL, version: 3 })),
       },
     })
       .then((response) => response.json())
@@ -27,7 +28,6 @@ const App = () => {
     url = padRef.current?.getCanvas().toDataURL("image/png");
     setDataURL(url);
     console.log(url);
-    //addInput(JSON.stringify({ method: "create_nft", payload: String(url) }));
     await sendSignature();
   };
 

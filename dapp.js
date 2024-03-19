@@ -1,34 +1,7 @@
 const rollupServer = process.env.ROLLUP_HTTP_SERVER_URL;
 console.log(`HTTP rollup_server url is ${rollupServer}`);
 import { create } from "ipfs-http-client";
-import { Base64Encode } from "base64-stream";
-import { createWorker } from "tesseract.js";
-import path from "path";
 
-/*const recognize = (imgdata) => {
-  let imageBuffer = Buffer.from(imgdata, "base64");
-
-  const worker = createWorker({
-    langPath: path.join(__dirname, "..", "lang-data"),
-    logger: (m) => console.log(m),
-  });
-
-  (async () => {
-    await worker.load();
-    await worker.loadLanguage("eng");
-    await worker.initialize("eng");
-    console.log("Recognizing...");
-    const {
-      data: { text },
-    } = await worker.recognize(imageBuffer);
-    console.log("Recognized text:", text);
-    await worker.terminate();
-    writeFileIpfs(`${statePath}/text.txt`, text);
-  })();
-};
-*/
-//import axios from "axios";
-import fs from "fs";
 import PDFDocument from "pdfkit";
 const apiUrl = process.env.IPFS_API || "http://127.0.0.1:5001";
 const ipfs = create({ url: apiUrl });
@@ -238,9 +211,8 @@ const writeFileIpfs = async (path, data) => {
       process.exit(1);
     }
     console.log("tx is: " + txresponse.data);
+
     await CreateContract(txresponse.data);
-    // await recognize(txresponse.data);
-    // await finishTx();
   } catch (e) {
     console.log(e);
     process.exit(1);
