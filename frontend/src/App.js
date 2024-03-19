@@ -5,7 +5,7 @@ import SignaturePad from "react-signature-canvas";
 const App = () => {
   let padRef = useRef({});
   const [dataURL, setDataURL] = useState("");
-  const cid = "bafybeifohesl7nvv3qjighgr47dutjkhtd4scobgnanddjndo6eadawztm";
+  const cid = "bafybeib4p2flqhs2gqsgeygr5ugqusczdjz45prs3ssxzq7y7wdsa5oyo4";
   const clear = () => {
     padRef.current?.clear();
   };
@@ -15,9 +15,7 @@ const App = () => {
     fetch(`/submit/${cid}`, {
       method: "POST",
       headers: { "Content-type": "application/octet-stream" },
-      body: {
-        data: encoder.encode(JSON.stringify({ data: dataURL, version: 3 })),
-      },
+      body: encoder.encode(JSON.stringify({ data: dataURL, version: 6 })),
     })
       .then((response) => response.json())
       .then((data) => console.log(data))

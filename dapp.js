@@ -201,12 +201,24 @@ const writeFileIpfs = async (path, data) => {
     }
 
     const txresponse = await getTx();
+    console.log("txresponse is", txresponse);
+    if (txresponse.data === undefined) {
+      const blob = new Blob(txresponse);
+      const textdata = await blob.text();
+      txresponse = JSON.parse(textdata);
+      console.log(txresponse);
+
+      if (txresponse.data === undefined) {
+        console.log("need input data");
+        process.exit(1);
+      }
+    }
 
     if (txresponse.data === undefined) {
       console.log("need input data");
       process.exit(1);
     }
-    if (txresponse.version != 3) {
+    if (txresponse.version != 5) {
       console.log("input from previous version found");
       process.exit(1);
     }
